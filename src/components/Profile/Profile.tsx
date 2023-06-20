@@ -2,7 +2,7 @@ import { QuestionAnswer } from "@mui/icons-material";
 
 const Profile = () => {
     return (
-        <div className="border-4 border-black grow justify-center flex flex-col py-10 px-3 gap-y-8 m-3">
+        <div className="grow justify-center flex flex-col py-10 px-3 gap-y-8">
             <section className="self-center rounded-full relative">
                 <img
                     className="h-24 w-24 rounded-full"
