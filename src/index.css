@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  @apply bg-slate-950;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-rose-500 rounded-full;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-rose-500 rounded-full;
+}
+
+
+@layer components{
+  .bdr{
+    @apply border-4 border-black ;
+  }
+}
