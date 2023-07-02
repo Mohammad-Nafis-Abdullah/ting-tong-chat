@@ -6,12 +6,12 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCOCN1gwCvYIbAFxtVgxwRAWcdshU-63Hc",
-  authDomain: "ting-tong-chat.firebaseapp.com",
-  projectId: "ting-tong-chat",
-  storageBucket: "ting-tong-chat.appspot.com",
-  messagingSenderId: "333928471527",
-  appId: "1:333928471527:web:c1ca017060427fdaedfb42"
+  apiKey: "AIzaSyCleRuvVLAzd1xjWuBhmf_cZF-wr1RYBrs",
+  authDomain: "ting-tong-chatting.firebaseapp.com",
+  projectId: "ting-tong-chatting",
+  storageBucket: "ting-tong-chatting.appspot.com",
+  messagingSenderId: "225154435724",
+  appId: "1:225154435724:web:86404685da2a7dc595c9a9"
 };
 
 // Initialize Firebase

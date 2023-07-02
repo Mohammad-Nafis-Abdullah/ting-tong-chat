@@ -2966,10 +2966,10 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
-firebase-tools@^12.4.0:
-  version "12.4.0"
-  resolved "https://registry.npmjs.org/firebase-tools/-/firebase-tools-12.4.0.tgz"
-  integrity sha512-ZWqi/z7gexbIh7/mLRGQ0Sr/+T1JR6jctUjBcCxcl/LLQ+vyziF+BwW6fRQLi/ofB6FYHR0XBCY7bhXH6brRjg==
+firebase-tools@^12.4.2:
+  version "12.4.2"
+  resolved "https://registry.yarnpkg.com/firebase-tools/-/firebase-tools-12.4.2.tgz#ea94039357275f9ed3c4b9a7b6568e342e1fa850"
+  integrity sha512-4oYbIq+htEi/sXRV1RN8Q/3r27+/VMcOw1G795KMEXgFluw9adWEegbobKyOMqN7VKF+M0jMeFUiGbWwlNUv8w==
   dependencies:
     "@google-cloud/pubsub" "^3.0.1"
     abort-controller "^3.0.0"
@@ -5228,7 +5228,7 @@ react-dom@^18.2.0:
 
 react-firebase-hooks@^5.1.1:
   version "5.1.1"
-  resolved "https://registry.npmjs.org/react-firebase-hooks/-/react-firebase-hooks-5.1.1.tgz"
+  resolved "https://registry.yarnpkg.com/react-firebase-hooks/-/react-firebase-hooks-5.1.1.tgz#fc92bb4b860c6753c806583f64d7f069b6ee6785"
   integrity sha512-y2UpWs82xs+39q5Rc/wq316ca52QsC0n8m801V+yM4IC4hbfOL4yQPVSh7w+ydstdvjN9F+lvs1WrO2VYxpmdA==
 
 react-is@^16.13.1, react-is@^16.7.0:
