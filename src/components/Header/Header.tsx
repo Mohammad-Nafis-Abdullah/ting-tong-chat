@@ -84,14 +84,14 @@ const Drawer = styled(MuiDrawer, {
     }),
 }));
 
+
 export default function Header() {
     const currentUser = true;
     const [open, setOpen] = React.useState(false);
     const [search, setSearch] = React.useState("");
     const [user, setUser] = React.useState([]);
     const navigate = useNavigate();
-    const SearchTime_Ref: React.MutableRefObject<NodeJS.Timeout | undefined> =
-        React.useRef();
+    const SearchTime_Ref: React.MutableRefObject<NodeJS.Timeout | undefined> = React.useRef();
 
     React.useEffect(() => {
         if (search) {
@@ -188,6 +188,7 @@ export default function Header() {
                                     sx={{ display: "block" }}
                                 >
                                     <ListItemButton
+                                        onClick={()=>navigate(`inbox/${123}`)}
                                         sx={{
                                             minHeight: 48,
                                             justifyContent: open

@@ -6,7 +6,7 @@ const Profile = () => {
             <section className="self-center rounded-full relative">
                 <img
                     className="h-24 w-24 rounded-full"
-                    src="https://cdn-icons-png.flaticon.com/256/149/149071.png"
+                    src={`https://cdn-icons-png.flaticon.com/256/149/149071.png`}
                     alt=""
                 />
 
