@@ -11,8 +11,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
 import { Backdrop } from "@mui/material";
-import { AccountCircle, Login, Logout } from "@mui/icons-material";
+import { AccountCircle, Logout } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../../firebase.init";
+import { useSignOut } from "react-firebase-hooks/auth";
 
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -84,14 +86,14 @@ const Drawer = styled(MuiDrawer, {
     }),
 }));
 
-
 export default function Header() {
-    const currentUser = true;
+    const [signOut] = useSignOut(auth);
     const [open, setOpen] = React.useState(false);
     const [search, setSearch] = React.useState("");
     const [user, setUser] = React.useState([]);
     const navigate = useNavigate();
-    const SearchTime_Ref: React.MutableRefObject<NodeJS.Timeout | undefined> = React.useRef();
+    const SearchTime_Ref: React.MutableRefObject<NodeJS.Timeout | undefined> =
+        React.useRef();
 
     React.useEffect(() => {
         if (search) {
@@ -108,6 +110,13 @@ export default function Header() {
             }
         }
     }, [search]);
+
+    
+    // logout function
+    const handleLogOut = async()=> {
+        await signOut();
+        navigate('/');
+    }
 
     return (
         <div className="">
@@ -180,98 +189,27 @@ export default function Header() {
                     </label>
                     <Divider />
                     <List className="grow overflow-y-auto overflow-x-hidden">
-                        {["Inbox", "Starred", "Send email", "Drafts", "Inbox", "Starred", "Send email", "Drafts", "Inbox", "Starred", "Send email", "Drafts"].map(
-                            (text, index) => (
-                                <ListItem
-                                    key={index}
-                                    disablePadding
-                                    sx={{ display: "block" }}
-                                >
-                                    <ListItemButton
-                                        onClick={()=>navigate(`inbox/${123}`)}
-                                        sx={{
-                                            minHeight: 48,
-                                            justifyContent: open
-                                                ? "initial"
-                                                : "center",
-                                            px: 2.5,
-                                        }}
-                                    >
-                                        <ListItemIcon
-                                            sx={{
-                                                minWidth: 0,
-                                                mr: open ? 3 : "auto",
-                                                justifyContent: "center",
-                                            }}
-                                        >
-                                            <MailIcon color="info" />
-                                        </ListItemIcon>
-                                        <ListItemText
-                                            primary={text}
-                                            sx={{ opacity: open ? 1 : 0 }}
-                                        />
-                                    </ListItemButton>
-                                </ListItem>
-                            )
-                        )}
-                    </List>
-                    <Divider />
-                    <div className="bg-slate-900 py-4">
-                        <ListItem disablePadding sx={{ display: "block" }}>
-                            {currentUser ? (
-                                <>
-                                    <ListItemButton
-                                        sx={{
-                                            minHeight: 48,
-                                            justifyContent: open
-                                                ? "initial"
-                                                : "center",
-                                            px: 2.5,
-                                        }}
-                                    >
-                                        <ListItemIcon
-                                            sx={{
-                                                minWidth: 0,
-                                                mr: open ? 3 : "auto",
-                                                justifyContent: "center",
-                                            }}
-                                        >
-                                            <Logout color="info" />
-                                        </ListItemIcon>
-                                        <ListItemText
-                                            primary={"Log out"}
-                                            sx={{ opacity: open ? 1 : 0 }}
-                                        />
-                                    </ListItemButton>
-
-                                    <ListItemButton
-                                        onClick={() => navigate(`account/${123}`)}
-                                        sx={{
-                                            minHeight: 48,
-                                            justifyContent: open
-                                                ? "initial"
-                                                : "center",
-                                            px: 2.5,
-                                        }}
-                                    >
-                                        <ListItemIcon
-                                            sx={{
-                                                minWidth: 0,
-                                                mr: open ? 3 : "auto",
-                                                justifyContent: "center",
-                                            }}
-                                        >
-                                            <AccountCircle color="info" />
-                                        </ListItemIcon>
-                                        <ListItemText
-                                            primary={"My Profile"}
-                                            sx={{ opacity: open ? 1 : 0 }}
-                                        />
-                                    </ListItemButton>
-                                </>
-                            ) : (
+                        {[
+                            "Inbox",
+                            "Starred",
+                            "Send email",
+                            "Drafts",
+                            "Inbox",
+                            "Starred",
+                            "Send email",
+                            "Drafts",
+                            "Inbox",
+                            "Starred",
+                            "Send email",
+                            "Drafts",
+                        ].map((text, index) => (
+                            <ListItem
+                                key={index}
+                                disablePadding
+                                sx={{ display: "block" }}
+                            >
                                 <ListItemButton
-                                    onClick={() => navigate("my-profile")}
+                                    onClick={() => navigate(`inbox/${123}`)}
                                     sx={{
                                         minHeight: 48,
                                         justifyContent: open
@@ -287,14 +225,66 @@ export default function Header() {
                                             justifyContent: "center",
                                         }}
                                     >
-                                        <Login color="info" />
+                                        <MailIcon color="info" />
                                     </ListItemIcon>
                                     <ListItemText
-                                        primary={"Log In"}
+                                        primary={text}
                                         sx={{ opacity: open ? 1 : 0 }}
                                     />
                                 </ListItemButton>
-                            )}
+                            </ListItem>
+                        ))}
+                    </List>
+                    <Divider />
+                    <div className="bg-slate-900 py-4">
+                        <ListItem disablePadding sx={{ display: "block" }}>
+                            <ListItemButton
+                                onClick={handleLogOut}
+                                title="Logout"
+                                sx={{
+                                    minHeight: 48,
+                                    justifyContent: open ? "initial" : "center",
+                                    px: 2.5,
+                                }}
+                            >
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 3 : "auto",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <Logout color="info" />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={"Log out"}
+                                    sx={{ opacity: open ? 1 : 0 }}
+                                />
+                            </ListItemButton>
+
+                            <ListItemButton
+                                onClick={() => navigate(`account/${123}`)}
+                                title="My Profile"
+                                sx={{
+                                    minHeight: 48,
+                                    justifyContent: open ? "initial" : "center",
+                                    px: 2.5,
+                                }}
+                            >
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 3 : "auto",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <AccountCircle color="info" />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={"My Profile"}
+                                    sx={{ opacity: open ? 1 : 0 }}
+                                />
+                            </ListItemButton>
                         </ListItem>
                     </div>
                 </div>
