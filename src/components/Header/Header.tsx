@@ -11,10 +11,11 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
 import { Backdrop } from "@mui/material";
-import { AccountCircle, Logout } from "@mui/icons-material";
+import { Logout } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase.init";
-import { useSignOut } from "react-firebase-hooks/auth";
+import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
+import SearchUser from "./SearchUser";
 
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -88,28 +89,9 @@ const Drawer = styled(MuiDrawer, {
 
 export default function Header() {
     const [signOut] = useSignOut(auth);
+    const [currentUser] = useAuthState(auth);
     const [open, setOpen] = React.useState(false);
-    const [search, setSearch] = React.useState("");
-    const [user, setUser] = React.useState([]);
     const navigate = useNavigate();
-    const SearchTime_Ref: React.MutableRefObject<NodeJS.Timeout | undefined> =
-        React.useRef();
-
-    React.useEffect(() => {
-        if (search) {
-            if (SearchTime_Ref.current) {
-                clearTimeout(SearchTime_Ref.current);
-                SearchTime_Ref.current = undefined;
-            }
-            if (!SearchTime_Ref.current) {
-                SearchTime_Ref.current = setTimeout(() => {
-                    // write user search functionality here
-
-                    SearchTime_Ref.current = undefined;
-                }, 2000);
-            }
-        }
-    }, [search]);
 
     
     // logout function
@@ -163,30 +145,9 @@ export default function Header() {
                         </div>
                     </DrawerHeader>
                     <Divider />
-                    <label className="flex flex-col items-center px-1 relative">
-                        <input
-                            onBlur={() => {
-                                setSearch("");
-                                setUser([]);
-                            }}
-                            onChange={(e) => setSearch(e.target.value)}
-                            type="text"
-                            className={`min-w-0 w-full p-1 font-bold text-slate-600 rounded focus:outline-rose-500 focus:outline-2 ${
-                                !open && "invisible"
-                            }`}
-                            placeholder="Search People..."
-                            value={search}
-                        />
-                        <div
-                            className={`max-h-[15rem] w-full p-1.5 bg-slate-800 z-10 absolute top-9 overflow-y-auto whitespace-pre-wrap ${
-                                (!open || !search || !user.length) && "hidden"
-                            }`}
-                        >
-                            Lorem ipsum dolor, sit amet consectetur adipisicing
-                            elit. Lorem, ipsum dolor sit amet consectetur
-                            adipisicing elit. Repellat, quos?
-                        </div>
-                    </label>
+                    
+                    <SearchUser open={open}/>
+
                     <Divider />
                     <List className="grow overflow-y-auto overflow-x-hidden">
                         {[
@@ -263,7 +224,7 @@ export default function Header() {
                             </ListItemButton>
 
                             <ListItemButton
-                                onClick={() => navigate(`account/${123}`)}
+                                onClick={() => navigate(`account/${currentUser?.uid}`)}
                                 title="My Profile"
                                 sx={{
                                     minHeight: 48,
@@ -278,7 +239,7 @@ export default function Header() {
                                         justifyContent: "center",
                                     }}
                                 >
-                                    <AccountCircle color="info" />
+                                    <img src={currentUser?.photoURL as string} className="w-9 h-9 rounded-full" alt={currentUser?.displayName as string} />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={"My Profile"}

@@ -1,14 +1,20 @@
 import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import google from '../../assets/google.gif';
 import { auth } from '../../firebase.init';
+import Loading from '../Loading/Loading';
 
 const Login = () => {
-  const [signInWithGoogle, , , error] = useSignInWithGoogle(auth);
+  const [signInWithGoogle, , loading, error] = useSignInWithGoogle(auth);
+
+  const hanldeSignIn = async()=> {
+      await signInWithGoogle();      
+  }
   
   return (
     <div className="min-h-screen flex flex-col justify-center items-center gap-3">
+      {loading && <Loading/>}
       <h1 className='font-bold text-3xl pb-8 text-slate-800'>Welcome to Ting Tong Chatting</h1>
-      <button onClick={()=>signInWithGoogle()} className="border-4 rounded-xl inline-flex items-center gap-3 p-3 mx-3">
+      <button onClick={hanldeSignIn} className="border-4 rounded-xl inline-flex items-center gap-3 p-3 mx-3">
         <h1 className='font-bold text-2xl text-slate-800'>Sign Up With </h1>
         <img src={google} alt="" className='h-20 w-20'/>
       </button>
