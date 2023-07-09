@@ -1,7 +1,7 @@
 import { Send } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 
-const ChatArea = () => {
+const ChatArea = ({chat}:{chat:unknown}) => {
   const [value, setValue] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 

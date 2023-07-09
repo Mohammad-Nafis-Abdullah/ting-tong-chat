@@ -3,25 +3,26 @@ import { cloudDb } from "../firebase.init";
 
 // get data by passing the collection name
 export const getCloudStoreData = async (collectionName: string) => {
-      const querySnapshot = await getDocs(collection(cloudDb, collectionName));
-      return querySnapshot;
+    const querySnapshot = await getDocs(collection(cloudDb, collectionName));
+    return querySnapshot;
 };
 
-
 // get data from a collection with query
-export const getCloudStoreSingleData = async (collectionName:string,id:string)=> {
-    const docRef = doc(cloudDb,collectionName,id);
+export const getCloudStoreSingleData = async (
+    collectionName: string,
+    id: string
+) => {
+    const docRef = doc(cloudDb, collectionName, id);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      // console.log("Document data:", docSnap.data());
-      return docSnap.data();
+        // console.log("Document data:", docSnap.data());
+        return docSnap.data();
     } else {
-      // docSnap.data() will be undefined in this case
-      // console.log("No such document!");
-      return null
+        // docSnap.data() will be undefined in this case
+        // console.log("No such document!");
+        return null;
     }
-}
-
+};
 
 // post data to a collection
 export const setCloudStoreData = async <T extends { id: string }>(
@@ -34,6 +35,8 @@ export const setCloudStoreData = async <T extends { id: string }>(
     } catch (e) {
         console.error("Error adding document: ", e);
     } */
-    const result = await setDoc(doc(cloudDb, collectionName, data.id), data);
+    const result = await setDoc(doc(cloudDb, collectionName, data.id), data, {
+        merge: true,
+    });
     return result;
 };

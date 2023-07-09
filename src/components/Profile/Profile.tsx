@@ -1,13 +1,14 @@
 import { QuestionAnswer } from "@mui/icons-material";
-import useFetchFromDb from "../../hooks/useFetchFromDb";
-import { USERS_COLLECTION } from "../../hooks/DbCollectionName";
-import { UserSchema } from "../../schema/userSchema";
-import { useParams } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { UserSchema } from "../../schema/schema";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../firebase.init";
 
 const Profile = () => {
-    const {id} = useParams();
-    const user:UserSchema = useFetchFromDb(`${USERS_COLLECTION}/${id}`);
     // console.log({currentUser,user});
+    const [currentUser] = useAuthState(auth);
+    const navigate = useNavigate();
+    const user = useLoaderData() as UserSchema;
 
     return (
         <div className="grow justify-center flex flex-col py-10 px-3 gap-y-8">
@@ -18,7 +19,14 @@ const Profile = () => {
                     alt={user?.name}
                 />
 
-                <button className="w-10 h-10 bg-rose-500 text-white font-bold rounded-full flex justify-center items-center gap-x-2 capitalize active:scale-[0.98] absolute border-4 -bottom-1 -right-1">
+                <button
+                    onClick={() =>
+                        navigate(`/inbox/${currentUser?.uid}-${user.id}`)
+                    }
+                    className={`${
+                        currentUser?.uid === user.id && "hidden"
+                    } w-10 h-10 bg-rose-500 text-white font-bold rounded-full flex justify-center items-center gap-x-2 capitalize active:scale-[0.98] absolute border-4 -bottom-1 -right-1`}
+                >
                     <QuestionAnswer color="inherit" />
                 </button>
             </section>
@@ -34,13 +42,19 @@ const Profile = () => {
                     </button>
                 </section> */}
 
-                <p className="text-rose-500 font-bold text-center">{user?.name}</p>
+                <p className="text-rose-500 font-bold text-center">
+                    {user?.name}
+                </p>
 
-                <p className="text-rose-500 font-bold text-center">{user?.email}</p>
+                <p className="text-rose-500 font-bold text-center">
+                    {user?.email}
+                </p>
 
                 <p className="font-bold text-slate-950 text-center">
                     Connections :{" "}
-                    <span className="text-rose-500">{user?.inbox ? Object.values(user.inbox).length: 0}</span>
+                    <span className="text-rose-500">
+                        {user?.inbox ? Object.values(user.inbox).length : 0}
+                    </span>
                 </p>
             </article>
         </div>
