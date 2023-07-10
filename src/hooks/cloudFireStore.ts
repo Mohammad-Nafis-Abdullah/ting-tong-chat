@@ -20,7 +20,7 @@ export const getCloudStoreSingleData = async (
     } else {
         // docSnap.data() will be undefined in this case
         // console.log("No such document!");
-        return null;
+        return ;
     }
 };
 

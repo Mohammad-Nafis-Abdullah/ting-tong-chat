@@ -17,20 +17,27 @@ export interface UserSchema {
     };
 }
 
+// chat user's schema
+export interface ChatUserSchema {
+    id: string;
+    name: string;
+    email: string;
+    image: string;
+}
+
+// message schema
+export interface MessageSchema {
+    id: string;
+    text: string;
+    sender: string;
+    time:string,
+}
+
 // chat's schema
 export interface ChatSchema {
-    chatId: string;
-    chatUsers: {
-        uid: string;
-        name: string;
-        email: string;
-        image: string;
-    }[];
+    id: string;
+    chatUsers: ChatUserSchema[];
     message: {
-        [messageId: string]: {
-            messageId: string;
-            text: string;
-            senderEmail: string;
-        };
+        [id:string]:MessageSchema
     };
 }
