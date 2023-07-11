@@ -1,5 +1,5 @@
 import { Send } from "@mui/icons-material";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChatSchema } from "../../schema/schema";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase.init";
@@ -67,14 +67,14 @@ const ChatArea = ({ chat }: props) => {
         let messages = ``;
         for (const key in messageObj) {
             const mssg = messageObj[key];
-            messages += `<section key={${mssg.id}} className="self-start flex flex-col items-start">
-                        <div className="inline-block text-sm leading-[0.80rem] bg-sky-400 p-3 max-w-sm rounded-tl-3xl rounded-tr-3xl rounded-br-3xl whitespace-pre-wrap">${mssg.text}</div>
-                        <p className="text-left text-xs font-bold text-gray-500">
-                          send by: ${mssg.sender}
-                          <br />
-                          ${mssg.time}
-                        </p>
-                      </section>`;
+            messages += <section key={mssg.id} className="self-start flex flex-col items-start">
+                            <div className="inline-block text-sm leading-[0.80rem] bg-sky-400 p-3 max-w-sm rounded-tl-3xl rounded-tr-3xl rounded-br-3xl whitespace-pre-wrap">${mssg.text}</div>
+                            <p className="text-left text-xs font-bold text-gray-500">
+                            send by: ${mssg.sender}
+                            <br />
+                            ${mssg.time}
+                            </p>
+                        </section>;
         }
         return messages;
     };
@@ -86,12 +86,11 @@ const ChatArea = ({ chat }: props) => {
                 ref={containerRef}
                 className="grow flex flex-col px-3 py-5 h-[calc(100vh-120px)] overflow-y-auto"
             >
-              
                 {/* {displayMssg(chat?.message)} */}
 
-                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((value) => {
+                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((value,i) => {
                     return (
-                        <>
+                        <div key={i}>
                             <section className="self-start flex flex-col items-start">
                                 <div className="inline-block text-sm leading-[0.80rem] bg-sky-400 p-3 max-w-sm rounded-tl-3xl rounded-tr-3xl rounded-br-3xl whitespace-pre-wrap">{`${value}\ntext\nmessage asdfasfd asdf safdsaf`}</div>
                                 <p className="text-left text-xs font-bold text-gray-500">
@@ -109,7 +108,7 @@ const ChatArea = ({ chat }: props) => {
                                     {"send time"}
                                 </p>
                             </section>
-                        </>
+                        </div>
                     );
                 })}
             </article>
