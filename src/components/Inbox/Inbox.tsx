@@ -5,13 +5,12 @@ import { getCloudStoreSingleData } from "../../hooks/cloudFireStore";
 import {
     CHATS_COLLECTION,
 } from "../../hooks/DbCollectionName";
-import { ChatSchema, ChatUserSchema } from "../../schema/schema";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../firebase.init";
+import { ChatSchema, ChatUserSchema, UserSchema } from "../../schema/schema";
 import { createChat } from "../../schema/createChats";
+import useGlobal from "../../hooks/useGlobal";
 
 const Inbox = () => {
-    const [currentUser] = useAuthState(auth);
+    const {state} = useGlobal();
     const { id1, id2 } = useLoaderData() as { [id: string]: string };
     const [chat, setChat] = useState<ChatSchema | undefined>();
 
@@ -30,18 +29,22 @@ const Inbox = () => {
                 if (res) {
                     setChat(res);
                 } else {
-                    const newChat:ChatSchema = await createChat(id1,id2);
-                    setChat(newChat);
+                    if (state.current_user) {
+                        const newChat:ChatSchema = createChat(state.current_user as UserSchema ,state.current_friend as UserSchema);
+                        setChat(newChat);
+                    }
                 }
         })();
-    }, [id1, id2, currentUser]);
+    }, [id1, id2, state.current_user, state.current_friend]);
 
-
+    useEffect(()=> {
+        console.log(chat);
+    },[chat])
 
     const otherUser = useCallback(():ChatUserSchema=> {
-        const user = chat?.chatUsers.find(user=>user.id !== currentUser?.uid) as ChatUserSchema;
+        const user = chat?.chatUsers.find(user=>user.id !== state.current_user?.id) as ChatUserSchema;
         return user;
-    },[currentUser,chat])
+    },[state.current_user,chat])
 
     // console.log(otherUser());
 

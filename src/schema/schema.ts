@@ -2,7 +2,7 @@
 export interface UserSchema {
     id: string;
     name: string;
-    nameLowerCase: string;
+    nameLowerCase: string[];
     email: string;
     image: string;
     inbox?: {

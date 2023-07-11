@@ -3,10 +3,13 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { UserSchema } from "../../schema/schema";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase.init";
+import useGlobal from "../../hooks/useGlobal";
+import use_Target_User_Store from "../../store/localStorage";
 
 const Profile = () => {
     // console.log({currentUser,user});
     const [currentUser] = useAuthState(auth);
+    const {setState} = useGlobal();
     const navigate = useNavigate();
     const user = useLoaderData() as UserSchema;
 
@@ -20,8 +23,11 @@ const Profile = () => {
                 />
 
                 <button
-                    onClick={() =>
-                        navigate(`/inbox/${currentUser?.uid}-${user.id}`)
+                    onClick={() =>{
+                        navigate(`/inbox/${currentUser?.uid}-${user.id}`);
+                        use_Target_User_Store(user);
+                        setState('current_friend',user);
+                    }
                     }
                     className={`${
                         currentUser?.uid === user.id && "hidden"

@@ -1,7 +1,8 @@
 import { UserSchema } from "../schema/schema";
 
 export interface StateSchema{
-  "current_friend" : UserSchema | null,
+  current_friend : UserSchema | null,
+  current_user: UserSchema | null,
 }
 
 
