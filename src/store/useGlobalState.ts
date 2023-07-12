@@ -9,16 +9,7 @@ export const Initial_State: StateSchema = {
 
 // state handle reducer function
 const reducer = (state: StateSchema, action: ActionSchema) => {
-    switch (action.type) {
-        case "current_friend":
-            return { ...state, current_friend: action.payload };
-
-        case "current_user":
-            return {...state, current_user: action.payload}
-
-        default:
-            return { ...state };
-    }
+    return {...state, [action.type]:action.payload};
 };
 
 // global state handling function with useReducer

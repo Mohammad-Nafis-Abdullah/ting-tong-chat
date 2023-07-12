@@ -27,7 +27,7 @@ export interface ChatUserSchema {
 
 // message schema
 export interface MessageSchema {
-    id: string;
+    id: number;
     text: string;
     sender: string;
     time:string,

@@ -1,8 +1,10 @@
 import { Send } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
-import { ChatSchema } from "../../schema/schema";
+import { ChatSchema, MessageSchema } from "../../schema/schema";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase.init";
+import { setCloudStoreData } from "../../hooks/cloudFireStore";
+import { CHATS_COLLECTION } from "../../hooks/DbCollectionName";
 
 interface props {
     chat: ChatSchema;
@@ -22,11 +24,14 @@ const ChatArea = ({ chat }: props) => {
         }
     };
 
-    useEffect(() => {
-        handleTextareaInput();
+    useEffect(()=> {
         if (containerRef.current) {
             containerRef.current.scrollTop = containerRef.current.scrollHeight;
         }
+    },[chat])
+
+    useEffect(() => {
+        handleTextareaInput();
     }, [value]);
 
     const handleTextareaChange = (
@@ -51,44 +56,85 @@ const ChatArea = ({ chat }: props) => {
                 textarea.selectionStart = textarea.selectionEnd =
                     cursorPosition + 1;
             } else if (value.split("\n").join("").length) {
-                console.log({ value });
+                handleSendBtn();
+            } else {
                 setValue("");
-                // console.log({textLength:value.split('\n').join('').length});
             }
         }
     };
 
-    const handleSendBtn = () => {
-        console.log({ value });
+    const handleSendBtn = async () => {
+        if (!value || !value.split("\n").join("").length) {
+            setValue("");
+            return;
+        }
+        const newChat: ChatSchema = JSON.parse(JSON.stringify(chat));
+
+        const newMessage: MessageSchema = {
+            id: Date.now(),
+            time: new Date().toLocaleString(),
+            sender: currentUser?.email as string,
+            text: value,
+            // timestamp: firebase.firestore.FieldValue.serverTimestamp() ,
+        };
         setValue("");
+
+        newChat.message[newMessage.id] = newMessage;
+        // console.log(newChat);
+        const result = await setCloudStoreData(CHATS_COLLECTION, newChat);
+        console.log(result);
     };
 
     const displayMssg = (messageObj: ChatSchema["message"]) => {
-        let messages = ``;
-        for (const key in messageObj) {
-            const mssg = messageObj[key];
-            messages += <section key={mssg.id} className="self-start flex flex-col items-start">
-                            <div className="inline-block text-sm leading-[0.80rem] bg-sky-400 p-3 max-w-sm rounded-tl-3xl rounded-tr-3xl rounded-br-3xl whitespace-pre-wrap">${mssg.text}</div>
-                            <p className="text-left text-xs font-bold text-gray-500">
-                            send by: ${mssg.sender}
-                            <br />
-                            ${mssg.time}
-                            </p>
-                        </section>;
+        if (messageObj) {
+            const array = Object.values(messageObj);
+            return array.sort((a,b)=> {
+                return a.id - b.id;
+            });
         }
-        return messages;
+        return [];
     };
 
     return (
-        <div className="grow flex flex-col">
+        <div className="grow flex flex-col max-h-[calc(100vh-65px)]">
             {/* message body */}
             <article
                 ref={containerRef}
-                className="grow flex flex-col px-3 py-5 h-[calc(100vh-120px)] overflow-y-auto"
+                className="grow flex flex-col px-3 py-5 overflow-y-auto"
             >
-                {/* {displayMssg(chat?.message)} */}
+                {displayMssg(chat?.message).map((mssg) => {
+                    return currentUser?.email === mssg.sender ? (
+                        <section
+                            key={mssg.id}
+                            className="self-end flex flex-col items-end"
+                        >
+                            <div className="inline-block text-sm leading-[0.80rem] bg-red-400 p-3 max-w-sm rounded-tl-3xl rounded-tr-3xl rounded-bl-3xl whitespace-pre-wrap">
+                                {mssg.text}
+                            </div>
+                            <p className="text-right text-xs font-bold text-gray-500">
+                                {mssg.sender}
+                                <br />
+                                {mssg.time}
+                            </p>
+                        </section>
+                    ) : (
+                        <section
+                            key={mssg.id}
+                            className="self-start flex flex-col items-start"
+                        >
+                            <div className="inline-block text-sm leading-[0.80rem] bg-sky-400 p-3 max-w-sm rounded-tl-3xl rounded-tr-3xl rounded-br-3xl whitespace-pre-wrap">
+                                {mssg.text}
+                            </div>
+                            <p className="text-left text-xs font-bold text-gray-500">
+                                {mssg.sender}
+                                <br />
+                                {mssg.time}
+                            </p>
+                        </section>
+                    );
+                })}
 
-                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((value,i) => {
+                {/* {[0, 1, 2, 3, 4].map((value,i) => {
                     return (
                         <div key={i}>
                             <section className="self-start flex flex-col items-start">
@@ -110,7 +156,7 @@ const ChatArea = ({ chat }: props) => {
                             </section>
                         </div>
                     );
-                })}
+                })} */}
             </article>
 
             {/* message writing field */}
