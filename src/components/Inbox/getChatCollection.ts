@@ -17,6 +17,5 @@ export const getChatCollection = async (id_1: string, id_2?: string) => {
             `${id_2}-${id_1}`
         )) as ChatSchema);
 
-      const id = res.id || undefined;
-    return id;
+    return res?.id;
 };

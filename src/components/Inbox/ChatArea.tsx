@@ -67,7 +67,7 @@ const ChatArea = ({ chat }: props) => {
             setValue("");
             return;
         }
-        const newChat: ChatSchema = JSON.parse(JSON.stringify(chat));
+        const newChat: ChatSchema = JSON.parse(JSON.stringify(chat?chat:{}));
 
         const newMessage: MessageSchema = {
             id: Date.now(),

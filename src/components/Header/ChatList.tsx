@@ -53,7 +53,7 @@ const ChatList = ({ open }: ChatListSchema) => {
 
     const getChatList = (u: ChatInfoSchema[]) => {
         const result = u.sort((a, b) => {
-            return a.time - b.time;
+            return b.time - a.time;
         });
         return result;
     };
