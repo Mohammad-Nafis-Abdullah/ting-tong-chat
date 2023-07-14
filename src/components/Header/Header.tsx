@@ -12,12 +12,11 @@ import { Backdrop } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase.init";
-import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
+import { useSignOut } from "react-firebase-hooks/auth";
 import SearchUser from "./SearchUser";
 import ChatList from "./ChatList";
 import useGlobal from "../../hooks/useGlobal";
-import use_Target_User_Store from "../../store/localStorage";
-import { UserSchema } from "../../schema/schema";
+import {use_Current_User_Store, use_Target_User_Store} from "../../store/localStorage";
 
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -91,8 +90,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function Header() {
     const [signOut] = useSignOut(auth);
-    const [currentUser] = useAuthState(auth);
-    const {setState} = useGlobal();
+    const {state,setState} = useGlobal();
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
 
@@ -100,8 +98,8 @@ export default function Header() {
     // logout function
     const handleLogOut = async()=> {
         await signOut();
-        setState('current_user',null);
-        setState('current_friend',use_Target_User_Store({} as UserSchema));
+        setState('current_user',use_Current_User_Store(null)());
+        setState('current_friend',use_Target_User_Store(null)());
         navigate('/');
     }
 
@@ -185,7 +183,9 @@ export default function Header() {
                             </ListItemButton>
 
                             <ListItemButton
-                                onClick={() => navigate(`account/${currentUser?.uid}`)}
+                                onClick={() => {
+                                    navigate(`account/${state.current_user?.id}`);
+                                }}
                                 title="My Profile"
                                 sx={{
                                     minHeight: 48,
@@ -200,7 +200,7 @@ export default function Header() {
                                         justifyContent: "center",
                                     }}
                                 >
-                                    <img src={currentUser?.photoURL as string} className="w-9 h-9 rounded-full" alt={currentUser?.displayName as string} />
+                                    <img src={state.current_user?.image as string} className="w-9 h-9 rounded-full" alt={state.current_user?.name as string} />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={"My Profile"}

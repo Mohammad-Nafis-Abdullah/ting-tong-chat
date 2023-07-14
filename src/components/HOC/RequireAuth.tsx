@@ -22,7 +22,6 @@ const RequireAuth = ({children}:propsSchema) => {
               nameLowerCase: user.displayName?.toLowerCase().split(' '),
               email:user.email,
               image:user.photoURL,
-              inbox: {},
             });
           }
       })()

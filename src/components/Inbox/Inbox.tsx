@@ -43,11 +43,7 @@ const Inbox = () => {
         })();
 
         return snap_ref();
-    }, [id1, id2, state.current_user, state.current_friend]);
-
-    useEffect(() => {
-        // console.log(chat);
-    }, [chat]);
+    }, [id1, id2, state]);
 
     /* const otherUser = useCallback(():ChatUserSchema=> {
         const user = chat?.chatUsers.find(user=>user.id !== state.current_user?.id) as ChatUserSchema;

@@ -1,15 +1,11 @@
 import { QuestionAnswer } from "@mui/icons-material";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { UserSchema } from "../../schema/schema";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../firebase.init";
 import useGlobal from "../../hooks/useGlobal";
-import use_Target_User_Store from "../../store/localStorage";
+import {use_Target_User_Store} from "../../store/localStorage";
 
 const Profile = () => {
-    // console.log({currentUser,user});
-    const [currentUser] = useAuthState(auth);
-    const {setState} = useGlobal();
+    const {state,setState} = useGlobal();
     const navigate = useNavigate();
     const user = useLoaderData() as UserSchema;
 
@@ -24,13 +20,12 @@ const Profile = () => {
 
                 <button
                     onClick={() =>{
-                        navigate(`/inbox/${currentUser?.uid}-${user.id}`);
-                        use_Target_User_Store(user);
-                        setState('current_friend',user);
+                        navigate(`/inbox/${state.current_user?.id}-${user.id}`);
+                        setState('current_friend',use_Target_User_Store(user)());
                     }
                     }
                     className={`${
-                        currentUser?.uid === user.id && "hidden"
+                        state.current_user?.id === user.id && "hidden"
                     } w-10 h-10 bg-rose-500 text-white font-bold rounded-full flex justify-center items-center gap-x-2 capitalize active:scale-[0.98] absolute border-4 -bottom-1 -right-1`}
                 >
                     <QuestionAnswer color="inherit" />

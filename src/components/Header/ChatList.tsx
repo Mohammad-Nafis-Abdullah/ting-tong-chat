@@ -9,10 +9,10 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import { ChatInfoSchema, UserSchema } from "../../schema/schema";
-import { auth, cloudDb } from "../../firebase.init";
+import { cloudDb } from "../../firebase.init";
 import { USERS_COLLECTION } from "../../hooks/DbCollectionName";
-import { useAuthState } from "react-firebase-hooks/auth";
 import useGlobal from "../../hooks/useGlobal";
+import { use_Target_User_Store } from "../../store/localStorage";
 
 interface ChatListSchema {
     open: boolean;
@@ -20,19 +20,17 @@ interface ChatListSchema {
 
 const ChatList = ({ open }: ChatListSchema) => {
     const navigate = useNavigate();
-    const {setState} = useGlobal();
+    const { state, setState } = useGlobal();
     const [chatList, setChatList] = useState<ChatInfoSchema[]>([]);
-    const [currentUser] = useAuthState(auth);
 
     useEffect(() => {
         // let snap_ref : ()=>void = ()=>{return};
 
-        (async () => {
-            if (currentUser) {
+            if (state.current_user) {
                 // console.log(currentUser.uid);
                 const docRef = collection(
                     cloudDb,
-                    `${USERS_COLLECTION}/${currentUser.uid}/inbox`
+                    `${USERS_COLLECTION}/${state.current_user.id}/inbox`
                 );
                 onSnapshot(
                     docRef,
@@ -46,10 +44,8 @@ const ChatList = ({ open }: ChatListSchema) => {
                     (err) => console.log(err)
                 );
             }
-        })();
-
         // return snap_ref && snap_ref();
-    }, [currentUser]);
+    }, [state.current_user]);
 
     const getChatList = (u: ChatInfoSchema[]) => {
         const result = u.sort((a, b) => {
@@ -77,11 +73,14 @@ const ChatList = ({ open }: ChatListSchema) => {
                 >
                     <ListItemButton
                         onClick={() => {
-                          navigate(`chat/${chat.id}`);
-                          setState('current_friend',getFriend(
-                            chat.chatUsers,
-                            currentUser?.uid as string
-                        ) as UserSchema)
+                            navigate(`chat/${chat.id}`);
+                            setState(
+                                "current_friend",
+                                use_Target_User_Store(getFriend(
+                                    chat.chatUsers,
+                                    state.current_user?.id as string
+                                ) as UserSchema)()
+                            );
                         }}
                         sx={{
                             minHeight: 48,
@@ -100,13 +99,13 @@ const ChatList = ({ open }: ChatListSchema) => {
                                 src={
                                     getFriend(
                                         chat.chatUsers,
-                                        currentUser?.uid as string
+                                        state.current_user?.id as string
                                     )?.image
                                 }
                                 alt={
                                     getFriend(
                                         chat.chatUsers,
-                                        currentUser?.uid as string
+                                        state.current_user?.id as string
                                     )?.name
                                 }
                                 className="w-10 rounded-full"
@@ -118,7 +117,7 @@ const ChatList = ({ open }: ChatListSchema) => {
                                     {
                                         getFriend(
                                             chat.chatUsers,
-                                            currentUser?.uid as string
+                                            state.current_user?.id as string
                                         )?.name
                                     }
                                 </p>

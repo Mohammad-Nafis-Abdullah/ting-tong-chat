@@ -5,34 +5,21 @@ import Footer from "./components/Footer/Footer";
 import { createContext, useEffect } from "react";
 import { useGlobalStateReturn } from "./store/schema";
 import useGlobalState from "./store/useGlobalState";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./firebase.init";
-import { UserSchema } from "./schema/schema";
-import use_Target_User_Store from "./store/localStorage";
+import {use_Current_User_Store, use_Target_User_Store} from "./store/localStorage";
 
 export const GlobalState = createContext({} as useGlobalStateReturn);
 
 function App() {
     const { state, setState } = useGlobalState();
-    const [currentUser] = useAuthState(auth);
 
     useEffect(() => {
         console.log(state);
     }, [state]);
 
     useEffect(() => {
-        if (currentUser) {
-            const current_user: UserSchema = {
-                id: currentUser.uid,
-                email: currentUser.email as string,
-                image: currentUser.photoURL as string,
-                name: currentUser.displayName as string,
-                nameLowerCase: currentUser.displayName?.split(" ") as string[],
-            };
-            setState("current_friend", use_Target_User_Store());
-            setState("current_user", current_user);
-        }
-    }, [currentUser]);
+        setState("current_friend", use_Target_User_Store()());
+        setState("current_user", use_Current_User_Store()());
+    }, []);
 
     return (
         <GlobalState.Provider value={{ state, setState }}>
