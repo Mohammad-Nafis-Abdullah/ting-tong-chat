@@ -6,15 +6,19 @@ export interface UserSchema {
     email: string;
     image: string;
     inbox?: {
-        [chatId: string]: {
-            chatId: string;
-            chatUsers: {
-                uid: string;
-                name: string;
-                image: string;
-            }[];
-        };
+        [chatId: string]: ChatInfoSchema;
     };
+}
+
+// chat info for chat list
+export interface ChatInfoSchema{
+    id: string;
+    chatUsers: {
+        id: string;
+        name: string;
+        image: string;
+    }[];
+    time:number;
 }
 
 // chat user's schema

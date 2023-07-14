@@ -21,10 +21,18 @@ export const GetRoutes = () => {
                 {
                     path: "inbox/:id",
                     element: <Inbox />,
-                    loader: async ({params}) => {
-                        const {id}:Params<string> = params;
-                        const [id1,id2] = (id as string).split('-');
-                        return {id1,id2};
+                    loader: async ({ params }) => {
+                        const { id }: Params<string> = params;
+                        const [id1, id2] = (id as string).split("-");
+                        return { id1, id2 };
+                    },
+                },
+                {
+                    path: "chat/:id",
+                    element: <Inbox />,
+                    loader: async ({ params }) => {
+                        const { id }: Params<string> = params;
+                        return { id1: id };
                     },
                 },
                 {

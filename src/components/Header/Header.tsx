@@ -2,20 +2,22 @@ import * as React from "react";
 import { styled, Theme, CSSObject } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
 import { Backdrop } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase.init";
 import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
 import SearchUser from "./SearchUser";
+import ChatList from "./ChatList";
+import useGlobal from "../../hooks/useGlobal";
+import use_Target_User_Store from "../../store/localStorage";
+import { UserSchema } from "../../schema/schema";
 
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -90,6 +92,7 @@ const Drawer = styled(MuiDrawer, {
 export default function Header() {
     const [signOut] = useSignOut(auth);
     const [currentUser] = useAuthState(auth);
+    const {setState} = useGlobal();
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
 
@@ -97,6 +100,8 @@ export default function Header() {
     // logout function
     const handleLogOut = async()=> {
         await signOut();
+        setState('current_user',null);
+        setState('current_friend',use_Target_User_Store({} as UserSchema));
         navigate('/');
     }
 
@@ -149,53 +154,9 @@ export default function Header() {
                     <SearchUser open={open}/>
 
                     <Divider />
-                    <List className="grow overflow-y-auto overflow-x-hidden">
-                        {[
-                            "Inbox",
-                            "Starred",
-                            "Send email",
-                            "Drafts",
-                            "Inbox",
-                            "Starred",
-                            "Send email",
-                            "Drafts",
-                            "Inbox",
-                            "Starred",
-                            "Send email",
-                            "Drafts",
-                        ].map((text, index) => (
-                            <ListItem
-                                key={index}
-                                disablePadding
-                                sx={{ display: "block" }}
-                            >
-                                <ListItemButton
-                                    onClick={() => navigate(`inbox/${123}`)}
-                                    sx={{
-                                        minHeight: 48,
-                                        justifyContent: open
-                                            ? "initial"
-                                            : "center",
-                                        px: 2.5,
-                                    }}
-                                >
-                                    <ListItemIcon
-                                        sx={{
-                                            minWidth: 0,
-                                            mr: open ? 3 : "auto",
-                                            justifyContent: "center",
-                                        }}
-                                    >
-                                        <MailIcon color="info" />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary={text}
-                                        sx={{ opacity: open ? 1 : 0 }}
-                                    />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
+                    
+                    <ChatList open={open}/>
+
                     <Divider />
                     <div className="bg-slate-900 py-4">
                         <ListItem disablePadding sx={{ display: "block" }}>

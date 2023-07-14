@@ -5,30 +5,34 @@ import { CHATS_COLLECTION } from "../../hooks/DbCollectionName";
 import { ChatSchema, UserSchema } from "../../schema/schema";
 import { createChat } from "../../schema/createChats";
 import useGlobal from "../../hooks/useGlobal";
-import {
-    doc,
-    onSnapshot,
-} from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { cloudDb } from "../../firebase.init";
 import { getChatCollection } from "./getChatCollection";
 
 const Inbox = () => {
     const { state } = useGlobal();
-    const { id1, id2 } = useLoaderData() as { [id: string]: string | undefined };
+    const { id1, id2 } = useLoaderData() as {
+        [id: string]: string | undefined;
+    };
     const [chat, setChat] = useState<ChatSchema | undefined>();
 
     useEffect(() => {
-        let snap_ref: () => void;
+        let snap_ref: () => void = () => {
+            return;
+        };
         (async () => {
             const res = await getChatCollection(id1 as string, id2);
             if (res) {
                 // query(collection(cloudDb, CHATS_COLLECTION, res))
-                snap_ref = onSnapshot(doc(cloudDb,CHATS_COLLECTION,res),(doc)=> {
-                    setChat(doc.data() as ChatSchema);
-                    
-                },(err)=>console.log(err));
+                snap_ref = onSnapshot(
+                    doc(cloudDb, CHATS_COLLECTION, res),
+                    (doc) => {
+                        setChat(doc.data() as ChatSchema);
+                    },
+                    (err) => console.log(err)
+                );
             } else {
-                if (state.current_user) {
+                if (state.current_user && state.current_friend) {
                     const newChat: ChatSchema = createChat(
                         state.current_user as UserSchema,
                         state.current_friend as UserSchema
@@ -38,11 +42,11 @@ const Inbox = () => {
             }
         })();
 
-        return snap_ref && snap_ref();
+        return snap_ref();
     }, [id1, id2, state.current_user, state.current_friend]);
 
     useEffect(() => {
-        console.log(chat);
+        // console.log(chat);
     }, [chat]);
 
     /* const otherUser = useCallback(():ChatUserSchema=> {

@@ -1,5 +1,7 @@
-import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { cloudDb } from "../firebase.init";
+import { ChatInfoSchema } from "../schema/schema";
+import { USERS_COLLECTION } from "./DbCollectionName";
 
 // get data by passing the collection name
 export const getCloudStoreData = async (collectionName: string) => {
@@ -40,3 +42,20 @@ export const setCloudStoreData = async <T extends { id: string }>(
     });
     return result;
 };
+
+
+export const updateChatList = async (user_id:string,chat_info:ChatInfoSchema)=> {
+    const ref = doc(cloudDb, USERS_COLLECTION, user_id,'inbox',chat_info.id);
+
+    const snap = await getDoc(ref);
+
+    if (snap.exists()) {
+        await updateDoc(ref,{
+                ...chat_info,
+        })
+    } else {
+        await setDoc(ref,{
+                ...chat_info,
+        })
+    }
+}

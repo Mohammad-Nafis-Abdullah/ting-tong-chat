@@ -1,17 +1,16 @@
 import { Send } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
-import { ChatSchema, MessageSchema } from "../../schema/schema";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../firebase.init";
-import { setCloudStoreData } from "../../hooks/cloudFireStore";
+import { ChatInfoSchema, ChatSchema, MessageSchema } from "../../schema/schema";
+import { setCloudStoreData, updateChatList } from "../../hooks/cloudFireStore";
 import { CHATS_COLLECTION } from "../../hooks/DbCollectionName";
+import useGlobal from "../../hooks/useGlobal";
 
 interface props {
     chat: ChatSchema;
 }
 
 const ChatArea = ({ chat }: props) => {
-    const [currentUser] = useAuthState(auth);
+    const {state} = useGlobal();
     const [value, setValue] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -73,7 +72,7 @@ const ChatArea = ({ chat }: props) => {
         const newMessage: MessageSchema = {
             id: Date.now(),
             time: new Date().toLocaleString(),
-            sender: currentUser?.email as string,
+            sender: state.current_user?.email as string,
             text: value,
             // timestamp: firebase.firestore.FieldValue.serverTimestamp() ,
         };
@@ -81,8 +80,16 @@ const ChatArea = ({ chat }: props) => {
 
         newChat.message[newMessage.id] = newMessage;
         // console.log(newChat);
-        const result = await setCloudStoreData(CHATS_COLLECTION, newChat);
-        console.log(result);
+        await setCloudStoreData(CHATS_COLLECTION, newChat);
+        
+        const chatInfo:ChatInfoSchema = {
+            id:chat.id,
+            chatUsers:chat.chatUsers,
+            time: newMessage.id,
+        }
+
+        await updateChatList(state.current_friend?.id as string,chatInfo);
+        await updateChatList(state.current_user?.id as string,chatInfo);
     };
 
     const displayMssg = (messageObj: ChatSchema["message"]) => {
@@ -100,10 +107,10 @@ const ChatArea = ({ chat }: props) => {
             {/* message body */}
             <article
                 ref={containerRef}
-                className="grow flex flex-col px-3 py-5 overflow-y-auto"
+                className="grow flex flex-col px-3 py-5 overflow-y-auto gap-y-3"
             >
                 {displayMssg(chat?.message).map((mssg) => {
-                    return currentUser?.email === mssg.sender ? (
+                    return state.current_user?.email === mssg.sender ? (
                         <section
                             key={mssg.id}
                             className="self-end flex flex-col items-end"

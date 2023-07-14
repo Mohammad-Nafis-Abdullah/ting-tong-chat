@@ -16,24 +16,23 @@ function App() {
     const { state, setState } = useGlobalState();
     const [currentUser] = useAuthState(auth);
 
-    useEffect(()=> {
+    useEffect(() => {
         console.log(state);
-    },[state])
+    }, [state]);
 
-    useEffect(()=> {
+    useEffect(() => {
         if (currentUser) {
-            const current_user:UserSchema = {
-                id:currentUser.uid,
-                email:currentUser.email as string,
-                image:currentUser.photoURL as string,
-                name:currentUser.displayName as string,
-                nameLowerCase: currentUser.displayName?.split(' ')  as string[],
-                inbox:{}
+            const current_user: UserSchema = {
+                id: currentUser.uid,
+                email: currentUser.email as string,
+                image: currentUser.photoURL as string,
+                name: currentUser.displayName as string,
+                nameLowerCase: currentUser.displayName?.split(" ") as string[],
             };
-            setState('current_friend',use_Target_User_Store());
-            setState('current_user',current_user);
+            setState("current_friend", use_Target_User_Store());
+            setState("current_user", current_user);
         }
-    },[currentUser])
+    }, [currentUser]);
 
     return (
         <GlobalState.Provider value={{ state, setState }}>
