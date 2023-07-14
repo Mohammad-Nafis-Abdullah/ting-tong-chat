@@ -4,6 +4,7 @@ import { ChatInfoSchema, ChatSchema, MessageSchema } from "../../schema/schema";
 import { setCloudStoreData, updateChatList } from "../../hooks/cloudFireStore";
 import { CHATS_COLLECTION } from "../../hooks/DbCollectionName";
 import useGlobal from "../../hooks/useGlobal";
+import { useNavigate } from "react-router-dom";
 
 interface props {
     chat: ChatSchema;
@@ -11,6 +12,7 @@ interface props {
 
 const ChatArea = ({ chat }: props) => {
     const {state} = useGlobal();
+    const navigate = useNavigate();
     const [value, setValue] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -90,6 +92,7 @@ const ChatArea = ({ chat }: props) => {
 
         await updateChatList(state.current_friend?.id as string,chatInfo);
         await updateChatList(state.current_user?.id as string,chatInfo);
+        navigate(`/chat/${chat.id}`);
     };
 
     const displayMssg = (messageObj: ChatSchema["message"]) => {
