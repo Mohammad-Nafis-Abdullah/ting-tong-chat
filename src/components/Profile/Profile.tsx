@@ -54,7 +54,7 @@ const Profile = () => {
                 <p className="font-bold text-slate-950 text-center">
                     Connections :{" "}
                     <span className="text-rose-500">
-                        {user?.inbox ? Object.values(user.inbox).length : 0}
+                        {user.connectios || 0}
                     </span>
                 </p>
             </article>

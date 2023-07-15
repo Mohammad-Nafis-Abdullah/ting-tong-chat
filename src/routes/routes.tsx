@@ -7,6 +7,8 @@ import RequireAuth from "../components/HOC/RequireAuth";
 import { USERS_COLLECTION } from "../hooks/DbCollectionName";
 import { getCloudStoreSingleData } from "../hooks/cloudFireStore";
 import { UserSchema } from "../schema/schema";
+import { collection, getDocs } from "firebase/firestore";
+import { cloudDb } from "../firebase.init";
 
 export const GetRoutes = () => {
     return createBrowserRouter([
@@ -44,7 +46,15 @@ export const GetRoutes = () => {
                             USERS_COLLECTION,
                             params.id as string
                         )) as UserSchema;
-                        return user;
+                        const res = await getDocs(
+                            collection(
+                                cloudDb,
+                                USERS_COLLECTION,
+                                params.id as string,
+                                "inbox"
+                            )
+                        );
+                        return {...user,connectios:res.docs.length};
                     },
                 },
                 {

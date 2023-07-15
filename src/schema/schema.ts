@@ -8,6 +8,7 @@ export interface UserSchema {
     inbox?: {
         [chatId: string]: ChatInfoSchema;
     };
+    connectios: number;
 }
 
 // chat info for chat list
