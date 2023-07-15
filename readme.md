@@ -1,7 +1,7 @@
 
 # [Ting Tong Chatting](https://ting-tong-chatting.web.app/)
 
-A real time chat application project where an user chatting with another user in real time.
+A real-time chat application project where a user chats with another user in real-time.
 
 ## Tech Stack
 
@@ -14,7 +14,6 @@ A real time chat application project where an user chatting with another user in
 **Authentication :** Firebase authentication 
 ## Features
 
-- A real-time chat application project where a user chats with another user in real-time.
 - Authentication with a Google account.
 - Search existing users in the search box.
 - Send a message to a user increases the number of connections and adds the user to the chat list.

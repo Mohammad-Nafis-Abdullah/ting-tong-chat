@@ -116,13 +116,12 @@ export default function Header() {
             <AppBar position="fixed" open={open}>
                 <div className="flex items-center h-full px-5">
                     <Typography
-                        onClick={() => navigate("/")}
                         variant="h6"
                         noWrap
                         component="div"
-                        className="uppercase cursor-pointer"
+                        className="uppercase"
                     >
-                        Ting Tong Chat
+                        Ting Tong Chatting
                     </Typography>
                 </div>
             </AppBar>
